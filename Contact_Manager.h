@@ -31,4 +31,6 @@ void Display_all_contact(CONTACT *head);
 
 bool reverse(CONTACT **head);
 
+void destroy_list(CONTACT **head);
+
 #endif

@@ -57,28 +57,25 @@ bool Delete_contact(CONTACT **head , uint32_t id){
             free(prev);
             prev = NULL;
             *head = current;
-            break;
+            return 1;
         }
 
         else if(current->id == id){
-            prev = *head;
-            while(prev->next != current){
-                prev = prev->next;
-            }
             CONTACT *temp;
             temp = current;
             prev->next = temp->next;
             current = temp->next;
             free(temp);
             temp = NULL;
-            break;
+            return 1;
         }
         else{
+            prev = current;
             current = current->next;
         }
     }
 
-    return 1;
+    return 0;
 
 }
 
@@ -124,12 +121,8 @@ int count(CONTACT *head){
         count_++;
         temp = temp->next;
     }
-    if(count_ > 0){
-        return count_;
-    }
-    else{
-        return 0;
-    }
+    
+    return count_;
 }
 
 bool reverse(CONTACT **head){
@@ -154,8 +147,21 @@ bool reverse(CONTACT **head){
     return 1;
 }
 
+void destroy_list(CONTACT **head){
+    CONTACT *current = *head;
+
+    while(current != NULL){
+        CONTACT *next = current->next;
+        free(current);
+        current = next;
+    }
+
+    *head = NULL;
+
+    printf("LIST DESTROYED");
+}
+
 int main(){
-    Contact_list list;
 
     CONTACT *head = NULL;
 
@@ -181,6 +187,8 @@ int main(){
     Delete_contact(&head , 1);
 
     Display_all_contact(head);
+
+    destroy_list(&head);
 
     return 0;
 }
