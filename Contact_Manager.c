@@ -29,7 +29,6 @@ void Add_contact(CONTACT **head , uint32_t id , char *name , char *phone){
     strcpy(c1->phone , phone);
 
     if(*head == NULL){
-        printf("add first element.\n");
         *head = c1;
         return;
     }
@@ -47,22 +46,39 @@ bool Delete_contact(CONTACT **head , uint32_t id){
     CONTACT *current = *head;
     CONTACT *next = NULL;
 
-    if(*head == NULL){
+    if(current == NULL){
         return 0;
     }
 
     while(current != NULL){
-        if(current->id == 1){
+        if(current == *head && current->id == id){
             prev = current;
-            next = prev->next;
-            current = next;
+            current = prev->next;
             free(prev);
             prev = NULL;
+            *head = current;
+            break;
+        }
+
+        else if(current->id == id){
+            prev = *head;
+            while(prev->next != current){
+                prev = prev->next;
+            }
+            CONTACT *temp;
+            temp = current;
+            prev->next = temp->next;
+            current = temp->next;
+            free(temp);
+            temp = NULL;
+            break;
         }
         else{
-            
+            current = current->next;
         }
     }
+
+    return 1;
 
 }
 
@@ -73,10 +89,10 @@ void Display_all_contact(CONTACT *head){
     }
     CONTACT *temp1 = head;
     printf("\n================= CONTACT LIST ====================\n");
-    printf("\n %s %7s %10s.\n","ID" , "NAME" , "PHONE");
+    printf("\n %s %10s %10s.\n","ID" , "NAME" , "PHONE");
     while(temp1 != NULL){
         printf("%"PRIu32 , temp1->id);
-        printf("%7s %10s.\n",temp1->name , temp1->phone);
+        printf("%10s %10s.\n",temp1->name , temp1->phone);
         temp1 = temp1->next;
     }
 }
@@ -158,7 +174,11 @@ int main(){
 
     Delete_contact(&head , 3);
 
+    Display_all_contact(head);
+
     reverse(&head);
+
+    Delete_contact(&head , 1);
 
     Display_all_contact(head);
 
