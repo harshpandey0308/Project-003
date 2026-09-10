@@ -29,7 +29,7 @@ bool insert(NODE **head , int data , int index){
         return true;
     }
 
-    if(index == 1){
+    else if(index == 1){
         (*head)->prev = new;
         new->next = *head;
         *head = new;
@@ -41,6 +41,7 @@ bool insert(NODE **head , int data , int index){
             temp = temp->next;
             if(temp == NULL){
                 printf("index is invalid.\n");
+                free(new);
                 return false;
             }
         }
@@ -74,17 +75,80 @@ void clean_memory(NODE **head){
     printf("Memory cleaned.\n");
 }
 
+bool delete(NODE **head , int data){
+    
+    if(*head == NULL){
+        printf("the list is empty , cannot delete.\n");
+        return false;
+    }
+
+    NODE *temp = *head;
+    while(temp != NULL){
+        if(temp == *head && temp->data == data){
+            if(temp->next == NULL){
+                free(temp);
+                temp = NULL;
+                *head = NULL;
+                return true;
+            }
+            NODE *temp1 = temp->next;
+            temp1->prev = temp->prev;
+            *head = temp1;
+            free(temp);
+            temp = NULL;
+            return true;
+        }
+        else if(temp->next != NULL && temp->data == data){
+
+            NODE *temp1 = temp;
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
+            free(temp1);
+            temp1 = NULL;
+            return true;
+        }
+        else if(temp->next == NULL && temp->data == data){
+            NODE *temp1 = temp;
+            temp->prev->next = temp->next;
+            free(temp1);
+            temp1 = NULL;
+            return true;
+        }
+        else{
+            temp = temp->next;
+        }
+
+    }
+    printf("the data is not in the list.\n");
+
+    return false;
+}
+
 int main(){
     NODE *head = NULL;
 
     insert(&head , 8 , 1);
     insert(&head , 9 , 1);
     insert(&head , 10 , 1);
+    insert(&head , 34 , 2);
+    insert(&head , 23 , 3);
+    insert(&head , 12 , 5);
 
+    
+
+    delete(&head , 8);
+    
+    delete(&head , 23);
+
+    printf("The list is :\n");
     Display_list(head);
 
     printf("\n Backward traversal: \n");
     NODE *temp = head;
+
+    if(head == NULL){
+        return 0;
+    }
 
     while(temp->next != NULL){
         temp = temp->next;
