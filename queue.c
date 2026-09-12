@@ -9,33 +9,38 @@ QUEUE *init_queue(){
         perror("Allocation failed.\n");
         exit(-1);
     }
-    queue->front = -1;
-    queue->rear = -1;
+    queue->front = 0;
+    queue->rear = 0;
     return queue;
 }
 
 bool enque(QUEUE *queue , int data){
-    if(queue->front == -1){
+    if(queue->front == queue->rear){
         queue->front++;
-        queue->data[queue->front] = data;
-        queue->rear = queue->front;
+        queue->data[queue->rear] = data;
         return true;
     }
-    
-    for(size_t i=queue->rear ; i>=0 ; i--){
-        if(queue->rear < MAX_SIZE){
-            queue->data[i+1] = queue->data[i];
-            queue->rear++;
-        }
-        else{
-            printf("QUEUE is full.\n");
+
+    for(size_t i=queue->front ; i>0 ; i--){
+        if(queue->front >= MAX_SIZE){
+            printf("the queue is full.\n");
             return false;
         }
+        queue->data[i] = queue->data[i-1];
     }
-
-    queue->data[queue->front] = data;
+    queue->front++;
+    queue->data[queue->rear] = data;
     return true;
 
+}
+
+bool deque(QUEUE *queue){
+     if(queue->front == queue->rear){
+        perror("queue is empty");
+        return false;
+     }
+     ++(queue->rear);
+     return true;
 }
 
 int main(){
@@ -48,7 +53,14 @@ int main(){
     enque(queue , 5);
     enque(queue , 12);
 
-    for(int i=0 ; i<=queue->rear ; i++){
+    for(int i=queue->rear ; i<queue->front ; i++){
+        printf("data = %d\n",queue->data[i]);
+    }
+
+    deque(queue);
+    deque(queue);
+
+    for(int i=queue->rear ; i<queue->front ; i++){
         printf("data = %d\n",queue->data[i]);
     }
 
