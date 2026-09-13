@@ -20,16 +20,17 @@ bool enque(QUEUE *queue , int data){
         queue->data[queue->rear] = data;
         return true;
     }
-
-    for(size_t i=queue->front ; i>0 ; i--){
-        if(queue->front >= MAX_SIZE){
-            printf("the queue is full.\n");
+    if(queue->front == MAX_SIZE){
+        queue->front = (queue->front + 1)%MAX_SIZE;
+        if(queue->front == queue->rear){
+            fprintf(stderr , "the queue is full.\n");
             return false;
         }
-        queue->data[i] = queue->data[i-1];
+        queue->data[queue->front] = data;
+        return true;
     }
-    queue->front++;
-    queue->data[queue->rear] = data;
+
+    queue->data[queue->front++] = data;
     return true;
 
 }
@@ -53,16 +54,50 @@ int main(){
     enque(queue , 5);
     enque(queue , 12);
 
-    for(int i=queue->rear ; i<queue->front ; i++){
+    int i=queue->rear;
+    while(i <= queue->front || i < MAX_SIZE){
         printf("data = %d\n",queue->data[i]);
+        if(i == MAX_SIZE){
+            i = (i+1)%MAX_SIZE;
+        }
+        else{
+            i++;
+        }
     }
 
     deque(queue);
     deque(queue);
 
-    for(int i=queue->rear ; i<queue->front ; i++){
-        printf("data = %d\n",queue->data[i]);
+    int k = queue->rear;
+
+    while(k <= queue->front || k < MAX_SIZE){
+        printf("data = %d\n",queue->data[k]);
+        if(k == MAX_SIZE){
+            k = (k+1)%MAX_SIZE;
+        }
+        else{
+            k++;
+        }
     }
+
+    printf("Queue after dequeing.\n");
+
+    enque(queue , 23);
+    enque(queue , 34);
+    enque(queue , 50);
+
+    int j = queue->rear;
+
+    while(j <= queue->front || j < MAX_SIZE){
+        printf("data = %d\n",queue->data[j]);
+        if(j == MAX_SIZE){
+            j = (j+1)%MAX_SIZE;
+        }
+        else{
+            j++;
+        }
+    }
+    
 
     return 0;
 }
