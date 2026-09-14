@@ -20,13 +20,13 @@ bool enque(QUEUE *queue , int data){
         queue->data[queue->rear] = data;
         return true;
     }
-    if(queue->front == MAX_SIZE){
-        queue->front = (queue->front + 1)%MAX_SIZE;
+    if(queue->front == MAX_SIZE-1){
         if(queue->front == queue->rear){
             fprintf(stderr , "the queue is full.\n");
             return false;
         }
         queue->data[queue->front] = data;
+        queue->front = (queue->front + 1)%MAX_SIZE;
         return true;
     }
 
@@ -39,6 +39,9 @@ bool deque(QUEUE *queue){
      if(queue->front == queue->rear){
         perror("queue is empty");
         return false;
+     }
+     if(queue->rear == MAX_SIZE - 1){
+        queue->rear = (queue->rear + 1)%MAX_SIZE;
      }
      ++(queue->rear);
      return true;
