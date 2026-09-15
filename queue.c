@@ -9,42 +9,50 @@ QUEUE *init_queue(){
         perror("Allocation failed.\n");
         exit(-1);
     }
+    queue->size = 0;
     queue->front = 0;
     queue->rear = 0;
     return queue;
 }
 
 bool enque(QUEUE *queue , int data){
-    if(queue->front == queue->rear){
-        queue->front++;
-        queue->data[queue->rear] = data;
-        return true;
-    }
-    if(queue->front == MAX_SIZE-1){
-        if(queue->front == queue->rear){
-            fprintf(stderr , "the queue is full.\n");
-            return false;
-        }
-        queue->data[queue->front] = data;
-        queue->front = (queue->front + 1)%MAX_SIZE;
-        return true;
+    if(queue->size == MAX_SIZE){
+        printf("Queue is full.\n");
+        return false;
     }
 
-    queue->data[queue->front++] = data;
+    queue->data[queue->front] = data;
+    queue->front = (queue->front + 1)%MAX_SIZE;
+    queue->size++;
     return true;
 
 }
 
 bool deque(QUEUE *queue){
-     if(queue->front == queue->rear){
-        perror("queue is empty");
-        return false;
-     }
-     if(queue->rear == MAX_SIZE - 1){
-        queue->rear = (queue->rear + 1)%MAX_SIZE;
-     }
-     ++(queue->rear);
-     return true;
+    if(queue->size == 0){
+    perror("queue is empty");
+    return false;
+    }
+
+    queue->rear = (queue->rear + 1)%MAX_SIZE;
+
+    --queue->size;
+
+    return true;
+}
+
+void print(QUEUE *queue){
+    if(queue->size == 0){
+        printf("Queue is empty.\n");
+        return;
+    }
+
+    size_t index = queue->rear;
+
+    for(size_t i=0 ; i<queue->size ; i++){
+       printf("data = %d.\n",queue->data[index]);
+       index = (index+1)%MAX_SIZE;
+    }
 }
 
 int main(){
@@ -57,50 +65,14 @@ int main(){
     enque(queue , 5);
     enque(queue , 12);
 
-    int i=queue->rear;
-    while(i <= queue->front || i < MAX_SIZE){
-        printf("data = %d\n",queue->data[i]);
-        if(i == MAX_SIZE){
-            i = (i+1)%MAX_SIZE;
-        }
-        else{
-            i++;
-        }
-    }
-
     deque(queue);
     deque(queue);
-
-    int k = queue->rear;
-
-    while(k <= queue->front || k < MAX_SIZE){
-        printf("data = %d\n",queue->data[k]);
-        if(k == MAX_SIZE){
-            k = (k+1)%MAX_SIZE;
-        }
-        else{
-            k++;
-        }
-    }
-
-    printf("Queue after dequeing.\n");
 
     enque(queue , 23);
     enque(queue , 34);
     enque(queue , 50);
 
-    int j = queue->rear;
-
-    while(j <= queue->front || j < MAX_SIZE){
-        printf("data = %d\n",queue->data[j]);
-        if(j == MAX_SIZE){
-            j = (j+1)%MAX_SIZE;
-        }
-        else{
-            j++;
-        }
-    }
-    
+    print(queue);
 
     return 0;
 }
