@@ -1,0 +1,13 @@
+#include<stdio.h>
+#include<fcntl.h>
+#include<unistd.h>
+
+int main(){
+int fd = open("test.txt" , O_WRONLY | O_CREAT , 0644);
+
+printf("the file descriptor is %d.\n", fd);
+
+close(fd);
+
+return 0;
+}
