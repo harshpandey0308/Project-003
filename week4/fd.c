@@ -4,7 +4,7 @@
 #include<unistd.h>
 
 int main(){
-int fd = open("test.txt" , O_WRONLY | O_CREAT , 0644);
+int fd = open("test.txt" , O_RDWR | O_CREAT  , 0644);
 
 if(fd == -1){
     perror("file open failed");
@@ -13,7 +13,9 @@ if(fd == -1){
 
 printf("the file descriptor is %d.\n", fd);
 
-const char msg[] = "Hello from file descriptors.\n";
+lseek(fd , 5 , SEEK_SET);
+
+const char msg[] = "Hello file descriptor.\n";
 
 int success = write(fd , msg , sizeof(msg) - 1);
 
