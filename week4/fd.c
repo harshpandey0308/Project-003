@@ -11,7 +11,7 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
-    const char msg[13] = "Hello Harsh";
+    const char msg[12] = "Hello Harsh";
 
     off_t set1 = lseek(fd , 0 , SEEK_SET);
 
