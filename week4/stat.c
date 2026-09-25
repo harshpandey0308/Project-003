@@ -21,5 +21,15 @@ int main(){
     printf("Owner Write : %s\n" , (st.st_mode & S_IWUSR)? "YES":"NO");
     printf("Owner execute : %s\n" , (st.st_mode & S_IXUSR)? "YES":"NO");
 
+    if(S_ISREG(st.st_mode)){
+       printf("REGULAR FILE.\n");
+    }
+    else if(S_ISDIR(st.st_mode)){
+        printf("DIRECTORY.\n");
+    }
+    else if(S_ISLNK(st.st_mode)){
+        printf("SYMBOLIC LINK.\n");
+    }
+
     return 0;
 }
