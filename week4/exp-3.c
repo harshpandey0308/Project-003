@@ -37,6 +37,7 @@ int main(){
         }
 
         printf("the offset of the child process : %ld.\n" , lseek(fd , 0 , SEEK_CUR));
+        
     }
     else if(new_pid > 0){
         printf("the fd of process %d is %d.\n",getpid() , fd);
