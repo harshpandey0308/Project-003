@@ -37,15 +37,19 @@ int main(){
         }
 
         printf("the offset of the child process : %ld.\n" , lseek(fd , 0 , SEEK_CUR));
-        
+
+        printf("exit child");
+        exit(0);
+        printf("exit");
+
     }
     else if(new_pid > 0){
         printf("the fd of process %d is %d.\n",getpid() , fd);
 
-        wait(NULL);
-
         const char msg1[7] = "Parent";
         ssize_t ws1 = write(fd , msg1 , sizeof(msg1) - 1);
+
+        sleep(20);
 
         if(ws1 == -1){
             perror("writing failed");
