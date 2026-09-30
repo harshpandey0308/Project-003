@@ -3,6 +3,7 @@
 #include<unistd.h>
 #include<fcntl.h>
 #include<sys/wait.h>
+#include<signal.h>
 #include<sys/types.h>
 
 int main(){
@@ -14,16 +15,22 @@ int main(){
         printf("child pid = %d and parent's pid = %d.\n",getpid() , getppid());
 
         printf("Parent's pid = %d.\n",getppid());
-
-        exit(42);
     }
     else if(pid > 0){
         printf("parent pid = %d.\n",getpid());
 
+        kill(pid , SIGTERM);
         wait(&status);
 
-        printf("the status of child process is %d.\n",status);
-
+        if(WIFSIGNALED(status)){
+            printf("child exited through signal.\n");
+            int st = WTERMSIG(status);
+            printf("the actual exit code is %d.\n",st);
+        }
+        else{
+             printf("the status of child process is %d.\n",status);
+        }
+        
         exit(-1);
     }
     else{
