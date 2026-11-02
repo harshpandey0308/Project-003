@@ -4,6 +4,8 @@
 #include<err.h>
 #include<stdlib.h>
 
+#define ITR 10000000
+
 typedef struct Box{
     int *sha_counter;
     pthread_mutex_t *mutex_;
@@ -14,17 +16,20 @@ void *worker1(void *arg){
 
     int lock = pthread_mutex_lock(b_arg->mutex_);
     if(lock != 0){
-        err(EXIT_FAILURE , "LOck");
+       err(EXIT_FAILURE , "LOck");
     }
 
-    *(b_arg->sha_counter) = *(b_arg->sha_counter) + 1;
+    for(long long int i=0 ; i<ITR ; i++){
+       *(b_arg->sha_counter) = *(b_arg->sha_counter) + 1;
+    }
+    
 
     int unlock = pthread_mutex_unlock(b_arg->mutex_);
     if(unlock != 0){
         err(EXIT_FAILURE , "unlock");
     }
 
-    return (void *)b_arg;
+    return NULL;
 }
 
 void *worker_2(void *arg){
@@ -35,14 +40,18 @@ void *worker_2(void *arg){
         err(EXIT_FAILURE , "lock1");
     }
 
-    *(b->sha_counter) = *(b->sha_counter) - 1;
+    for(long long int i=0 ; i<ITR ; i++){
 
+        *(b->sha_counter) = *(b->sha_counter) + 1;
+
+    }
+    
     int unlock = pthread_mutex_unlock(b->mutex_);
     if(unlock != 0){
         err(EXIT_FAILURE , "unlock");
     }
 
-    return (void *)b;
+    return NULL;
 }
 
 int main(){
@@ -55,6 +64,10 @@ int main(){
     b1.mutex_ = &mutex;
 
     int init = pthread_mutex_init(b1.mutex_ , NULL);
+
+    if(init != 0){
+        err(EXIT_FAILURE , "initialization failed");
+    }
     
     pthread_t worker_;
 
@@ -65,23 +78,26 @@ int main(){
         pthread_t worker2;
         int pthread2 = pthread_create(&worker2 , NULL , worker_2 , (void *)arg);
         if(pthread2 == 0){
-            void *arg2 = NULL;
-            int join_ = pthread_join(worker2 , &arg2);
+            int join_ = pthread_join(worker2 , NULL);
 
             if(join_ != 0){
                 err(EXIT_FAILURE , "join");
             }
         }
+        else{
+            printf("second thread creation failed");
+        }
 
-
-        void *arg1 = NULL;
-        int join = pthread_join(worker_ , &arg1);
+        int join = pthread_join(worker_ , NULL);
 
         if(join != 0){
             err(EXIT_FAILURE , "join");
         }
         
-        printf("The shared counter is %d.\n",*(((Box *)arg1)->sha_counter));
+        printf("The shared counter is %d.\n", *(b1.sha_counter));
+    }
+    else{
+        err(EXIT_FAILURE , "thread creation fails");
     }
 
     int destroy = pthread_mutex_destroy(b1.mutex_);
