@@ -66,7 +66,6 @@ int main(){
     cout<<"2 multiple : "<<result2<<endl;
 
     cout<<"3 multiple : "<<result3<<endl;
-    //
 
     //std::terminate();
 
