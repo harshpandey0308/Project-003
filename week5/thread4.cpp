@@ -7,20 +7,32 @@
 using namespace std;
 
 void worker_a(int& value , std::mutex& mutex_){
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::unique_lock<std::mutex> guard(mutex_);
+    
+    value = value + 40;
 
-    for(int i=0 ; i<LOOP_TIME ; i++){
-        value = value + 5;
+    cout<<"value : "<<value;
+
+    guard.unlock();
+
+    int sum = 0;
+
+    for(size_t i=0 ; i<100 ; i++){
+       sum = sum + i;
     }
 
+    guard.lock();
+
+    cout<<"value :"<<value<<endl;
     
+    guard.unlock();
     
 }
 
 void worker_b(int& value , std::mutex& mutex){
     std::lock_guard<std::mutex> guard(mutex);
 
-    for(int i=0 ; i<LOOP_TIME ; i++){
+    for(int i=0 ; i<5 ; i++){
         value = value + 10;
         //value = value/0;
     }
